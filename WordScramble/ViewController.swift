@@ -3,17 +3,23 @@ import UIKit
 class ViewController: UITableViewController {
     var allWords = [String]()
     var usedWord = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "New game", style: .done, target: self, action: #selector(startGame))
-        if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt"){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(promptForAnswer))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "New game",
+                                                           style: .done,
+                                                           target: self,
+                                                           action: #selector(startGame))
+        
+        if let startWordsURL = Bundle.main.url(forResource: "start",
+                                               withExtension: "txt") {
             if let startWords = try? String(contentsOf: startWordsURL){
                 allWords = startWords.components(separatedBy: "\n")
             }
-        }
-        if allWords.isEmpty{
-            allWords = ["Catch"]
         }
         startGame()
     }
@@ -30,18 +36,18 @@ class ViewController: UITableViewController {
         cell.textLabel?.text = usedWord[indexPath.row]
         return cell
     }
-    @objc func promptForAnswer(){
+    @objc func promptForAnswer() {
         let ac = UIAlertController(title: "Enter answer", message: nil, preferredStyle: .alert)
         ac.addTextField()
         let submitAction = UIAlertAction(title: "Submit", style: .default) {
             [weak self,weak ac] action in
             guard let answer = ac?.textFields?[0].text else { return }
-            self?.submit(answer)
+            self?.submit(answer: answer)
         }
         ac.addAction(submitAction)
         present(ac, animated: true)
     }
-    func submit(_ answer:String){
+    func submit(answer: String) {
         let word = answer.lowercased()
         let errorTitle: String
         let errorMessage: String
@@ -73,7 +79,6 @@ class ViewController: UITableViewController {
     }
     func isOriginal(word: String) -> Bool {
         guard let title = title else { return false }
-        
         if word == title {
             return false
         }
